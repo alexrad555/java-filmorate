@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @ActiveProfiles("test")
 public class FilmControllerTest {
     private FilmController filmController;
+
     @BeforeEach
     void setUp() {
         filmController = new FilmController();
