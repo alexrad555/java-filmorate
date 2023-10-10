@@ -20,7 +20,7 @@ public abstract class BaseController<T extends BaseUnit> {
     }
 
     public T update(T data) {
-        if(!storage.containsKey(data.getId())) {
+        if (!storage.containsKey(data.getId())) {
             throw new DataNotFoundException(String.format("Data %s not found", data));
         }
         validate(data);
