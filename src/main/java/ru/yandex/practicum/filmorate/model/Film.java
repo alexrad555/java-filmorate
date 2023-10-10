@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
