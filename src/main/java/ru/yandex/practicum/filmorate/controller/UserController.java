@@ -23,6 +23,9 @@ public class UserController extends BaseController<User> {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("Creating user {}", user);
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
         return super.create(user);
     }
 
