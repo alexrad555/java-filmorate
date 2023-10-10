@@ -23,6 +23,7 @@ public class User extends BaseUnit {
     @NotBlank
     String login;
 
+    @NotBlank
     String name;
 
     @PastOrPresent
