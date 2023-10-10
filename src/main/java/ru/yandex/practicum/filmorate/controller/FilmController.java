@@ -13,7 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController extends BaseController<Film> {
-    private final LocalDate START_RELEASE_DATA = LocalDate.of(1895, 12, 28);
+
+    // заменил на came case не START_RELEASE_DATA не проходит тесты на github
+    private final LocalDate startReleaseData = LocalDate.of(1895, 12, 28);
 
     @GetMapping
     public List<Film> getAll() {
@@ -35,7 +37,7 @@ public class FilmController extends BaseController<Film> {
 
     @Override
     public void validate(Film data) {
-        if (data.getReleaseDate().isBefore(START_RELEASE_DATA)) {
+        if (data.getReleaseDate().isBefore(startReleaseData)) {
             throw new FilmorateValidationException("Film release data is invalid");
         }
     }
