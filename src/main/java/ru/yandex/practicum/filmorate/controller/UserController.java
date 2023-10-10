@@ -35,7 +35,7 @@ public class UserController extends BaseController<User> {
     @Override
     public void validate(User data) {
         LocalDate currentDate = LocalDate.now();
-        if (data.getBirthday().isAfter(currentDate)){
+        if (data.getBirthday().isAfter(currentDate)) {
             throw new UserBirthdayValidationException("User birthday is invalid");
         }
 
