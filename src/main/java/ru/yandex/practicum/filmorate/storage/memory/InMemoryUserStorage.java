@@ -69,7 +69,7 @@ public class InMemoryUserStorage extends InMemoryBaseStorage<User> implements Us
         }
         User user = super.getStorage().get(id);
         user.getIds().remove(userId);
-        if(!super.getStorage().containsKey(userId)) {
+        if (!super.getStorage().containsKey(userId)) {
             throw new DataNotFoundException("Не найден id");
         }
         User userSecond = super.getStorage().get(userId);
