@@ -4,7 +4,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 
-public interface UserStorage extends AbstractStorage<User>{
+public interface UserStorage extends AbstractStorage<User> {
 
     List<User> getAllFriends(Long count);
 
