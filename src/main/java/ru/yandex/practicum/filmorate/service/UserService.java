@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService extends AbstractService<User>{
+public class UserService extends AbstractService<User> {
 
     private final UserStorage userStorage;
 

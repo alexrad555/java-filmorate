@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FilmService extends AbstractService<Film>{
+public class FilmService extends AbstractService<Film> {
 
     private final FilmStorage filmStorage;
 
