@@ -16,8 +16,7 @@ import java.util.Map;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler(DataNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler()
     public ErrorResponse handlerDataNotFoundException(final DataNotFoundException exception) {
         log.error("Данные не найдены {}", exception.getMessage());
         return new ErrorResponse(exception.getMessage());

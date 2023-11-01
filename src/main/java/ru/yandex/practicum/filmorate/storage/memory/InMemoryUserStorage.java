@@ -49,14 +49,11 @@ public class InMemoryUserStorage extends InMemoryBaseStorage<User> implements Us
 
     @Override
     public User addFriend(Long id, Long userId) {
-        if (!super.getStorage().containsKey(id)) {
+        if (!super.getStorage().containsKey(id) || !super.getStorage().containsKey(userId)) {
             throw new DataNotFoundException("Не найден id");
         }
         User user = super.getStorage().get(id);
         user.getIds().add(userId);
-        if (!super.getStorage().containsKey(userId)) {
-            throw new DataNotFoundException("Не найден id");
-        }
         User userSecond = super.getStorage().get(userId);
         userSecond.getIds().add(id);
         return user;
