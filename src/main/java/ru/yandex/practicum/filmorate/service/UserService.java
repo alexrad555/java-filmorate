@@ -25,6 +25,11 @@ public class UserService extends AbstractService<User> {
     }
 
     @Override
+    public User getById(Long id) {
+        return userStorage.getById(id);
+    }
+
+    @Override
     public User update(User data) {
         validate(data);
         return userStorage.update(data);

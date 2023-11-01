@@ -30,6 +30,14 @@ public class InMemoryBaseStorage<T extends BaseUnit> implements AbstractStorage<
     }
 
     @Override
+    public T getById(Long id) {
+        if (!storage.containsKey(id)) {
+            throw new DataNotFoundException("Не найден id");
+        }
+        return storage.get(id);
+    }
+
+    @Override
     public T update(T data) {
         if (!storage.containsKey(data.getId())) {
             throw new DataNotFoundException("Не найден id");

@@ -12,4 +12,6 @@ public interface AbstractStorage<T extends BaseUnit> {
 
     List<T> getAll();
 
+    T getById(Long id);
+
 }

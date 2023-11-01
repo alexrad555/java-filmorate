@@ -43,6 +43,11 @@ public class FilmService extends AbstractService<Film> {
         }
     }
 
+    @Override
+    public Film getById(Long id) {
+        return filmStorage.getById(id);
+    }
+
     public void deleteLike(Long id, Long userId) {
         filmStorage.deleteLike(id,userId);
     }

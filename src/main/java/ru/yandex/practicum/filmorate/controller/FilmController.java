@@ -23,6 +23,12 @@ public class FilmController {
         return filmService.getAll();
     }
 
+    @GetMapping("/{id}")
+    public Film getById(@PathVariable Long id) {
+        log.info("Get film  by id {}", id);
+        return filmService.getById(id);
+    }
+
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.info("Creating film {}", film);

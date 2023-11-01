@@ -13,4 +13,6 @@ public abstract class AbstractService<T extends BaseUnit> {
     public abstract List<T> getAll();
 
     public abstract void validate(T data);
+
+    public abstract T getById(Long id);
 }
