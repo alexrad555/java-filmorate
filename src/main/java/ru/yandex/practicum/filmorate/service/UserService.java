@@ -17,7 +17,7 @@ public class UserService extends AbstractService<User> {
 
     @Override
     public User create(User data) {
-        if (data.getName() == null) {
+        if (data.getName() == null || data.getName().isBlank()) {
             data.setName(data.getLogin());
         }
         validate(data);
