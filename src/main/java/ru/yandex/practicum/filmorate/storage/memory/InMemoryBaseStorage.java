@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.Setter;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 import ru.yandex.practicum.filmorate.storage.AbstractStorage;
 import lombok.Getter;
@@ -19,6 +21,9 @@ public class InMemoryBaseStorage<T extends BaseUnit> implements AbstractStorage<
 
     @Override
     public T create(T data) {
+        if (data.getId() != null) {
+            throw new InternalServerErrorException("не должен приходить id");
+        }
         data.setId(++generatedId);
         storage.put(data.getId(), data);
         return data;
@@ -26,6 +31,9 @@ public class InMemoryBaseStorage<T extends BaseUnit> implements AbstractStorage<
 
     @Override
     public T update(T data) {
+        if (!storage.containsKey(data.getId())) {
+            throw new DataNotFoundException("Не найден id");
+        }
         storage.put(data.getId(), data);
         return data;
     }
