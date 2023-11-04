@@ -2,18 +2,28 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserBirthdayValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService extends AbstractService<User> {
 
     private final UserStorage userStorage;
+
+    @Override
+    public void validate(User data) {
+        LocalDate currentDate = LocalDate.now();
+        if (data.getBirthday().isAfter(currentDate)) {
+            throw new UserBirthdayValidationException("User birthday is invalid");
+        }
+    }
 
     @Override
     public User create(User data) {
@@ -41,26 +51,30 @@ public class UserService extends AbstractService<User> {
     }
 
     public void deleteFriend(Long id, Long friendId) {
-        userStorage.deleteFriend(id,friendId);
+        User user = getUserFromStorage(id);
+        User friendUser = getUserFromStorage(friendId);
+        userStorage.deleteFriend(user, friendUser);
     }
 
     public User addFriend(Long id, Long friendId) {
-        return userStorage.addFriend(id, friendId);
+        User user = getUserFromStorage(id);
+        User friendUser = getUserFromStorage(friendId);
+        return userStorage.addFriend(user, friendUser);
     }
 
     public List<User> getAllFriends(Long id) {
-        return userStorage.getAllFriends(id);
+        User user = getUserFromStorage(id);
+        return userStorage.getAllFriends(user);
     }
 
     public List<User> getCommonFriends(Long id, Long otherId) {
-        return userStorage.getCommonFriends(id, otherId);
+        User user = getUserFromStorage(id);
+        User otherUser = getUserFromStorage(otherId);
+        return userStorage.getCommonFriends(user, otherUser);
     }
 
-    @Override
-    public void validate(User data) {
-        LocalDate currentDate = LocalDate.now();
-        if (data.getBirthday().isAfter(currentDate)) {
-            throw new UserBirthdayValidationException("User birthday is invalid");
-        }
+    private User getUserFromStorage(Long  id) {
+        Optional<User> userOptional = Optional.ofNullable(userStorage.getById(id));
+        return userOptional.orElseThrow(() -> new DataNotFoundException("Не найден id"));
     }
 }

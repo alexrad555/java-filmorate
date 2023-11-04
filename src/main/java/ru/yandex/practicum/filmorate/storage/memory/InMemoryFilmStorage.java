@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.memory;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
@@ -17,22 +17,14 @@ public class InMemoryFilmStorage extends InMemoryBaseStorage<Film> implements Fi
     }
 
     @Override
-    public Film addLike(Long id, Long userId) {
-        if (!super.getStorage().containsKey(id) || !super.getStorage().containsKey(userId)) {
-            throw new DataNotFoundException("Не найден id");
-        }
-        Film film = super.getStorage().get(id);
-        film.getIds().add(userId);
+    public Film addLike(Film film, User user) {
+        film.getIds().add(user.getId());
         return film;
     }
 
     @Override
-    public void deleteLike(Long id, Long userId) {
-        if (!super.getStorage().containsKey(id) || !super.getStorage().containsKey(userId)) {
-            throw new DataNotFoundException("Не найден id");
-        }
-        Film film = super.getStorage().get(id);
-        film.getIds().remove(userId);
+    public void deleteLike(Film film, User user) {
+        film.getIds().remove(user.getId());
     }
 
 }
