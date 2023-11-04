@@ -33,10 +33,11 @@ public class UserControllerTest {
 
     @Test
     void validateNegative() {
+        LocalDate currentDate = LocalDate.now().plusMonths(1);
         User user = User.builder()
                 .email("email@email.com")
                 .login("login")
-                .birthday(LocalDate.of(2023, 11, 3))
+                .birthday(currentDate)
                 .name("Name")
                 .build();
         Assertions.assertThrows(UserBirthdayValidationException.class, () -> userService.validate(user));
