@@ -33,7 +33,7 @@ public class UserControllerTest {
 
     @Test
     void validateNegative() {
-        LocalDate currentDate = LocalDate.now().plusMonths(1);
+        LocalDate currentDate = LocalDate.now().plusMonths(5);
         User user = User.builder()
                 .email("email@email.com")
                 .login("login")
