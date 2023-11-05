@@ -9,8 +9,6 @@ import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
-import java.util.Map;
-
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
