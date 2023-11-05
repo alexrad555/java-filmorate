@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserBirthdayValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -21,7 +21,7 @@ public class UserService extends AbstractService<User> {
     public void validate(User data) {
         LocalDate currentDate = LocalDate.now();
         if (data.getBirthday().isAfter(currentDate)) {
-            throw new UserBirthdayValidationException("User birthday is invalid");
+            throw new ValidationException("User birthday is invalid");
         }
     }
 

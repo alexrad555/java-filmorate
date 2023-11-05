@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
-import ru.yandex.practicum.filmorate.exception.FilmorateValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -28,7 +28,7 @@ public class FilmService extends AbstractService<Film> {
     @Override
     public void validate(Film data) {
         if (data.getReleaseDate().isBefore(START_RELEASE_DATA)) {
-            throw new FilmorateValidationException("Film release data is invalid");
+            throw new ValidationException("Film release data is invalid");
         }
     }
 

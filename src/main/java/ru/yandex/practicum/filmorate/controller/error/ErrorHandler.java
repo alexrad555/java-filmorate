@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
-import ru.yandex.practicum.filmorate.exception.FilmorateValidationException;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
-import ru.yandex.practicum.filmorate.exception.UserBirthdayValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import java.util.Map;
 
@@ -22,14 +21,11 @@ public class ErrorHandler {
         return new ErrorResponse(exception.getMessage());
     }
 
-    @ExceptionHandler({FilmorateValidationException.class, UserBirthdayValidationException.class})
+    @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handlerIncorrectCount(final RuntimeException exception) {
+    public ErrorResponse handlerValidationException(final ValidationException exception) {
         log.error("Ошибка входящих данных {}", exception.getMessage());
-        return Map.of(
-                "error", "Ошибка входящих данных",
-                "errorMessage", exception.getMessage()
-        );
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler(InternalServerErrorException.class)

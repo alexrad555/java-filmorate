@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import ru.yandex.practicum.filmorate.exception.UserBirthdayValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -40,6 +40,6 @@ public class UserControllerTest {
                 .birthday(currentDate)
                 .name("Name")
                 .build();
-        Assertions.assertThrows(UserBirthdayValidationException.class, () -> userService.validate(user));
+        Assertions.assertThrows(ValidationException.class, () -> userService.validate(user));
     }
 }
