@@ -1,24 +1,59 @@
 package ru.yandex.practicum.filmorate.storage.memory;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
-public class InMemoryUserStorage extends InMemoryBaseStorage<User> implements UserStorage {
+public class InMemoryUserStorage implements UserStorage {
+
+    private final Map<Long, User> storage = new HashMap<>();
+    private long generatedId;
+
+    @Override
+    public User create(User data) {
+        if (data.getId() != null) {
+            throw new InternalServerErrorException("не должен приходить id");
+        }
+        data.setId(++generatedId);
+        storage.put(data.getId(), data);
+        return data;
+    }
+
+    @Override
+    public User getById(Long id) {
+        if (!storage.containsKey(id)) {
+            throw new DataNotFoundException("Не найден id");
+        }
+        return storage.get(id);
+    }
+
+    @Override
+    public User update(User data) {
+        if (!storage.containsKey(data.getId())) {
+            throw new DataNotFoundException("Не найден id");
+        }
+        storage.put(data.getId(), data);
+        return data;
+    }
+
+    @Override
+    public List<User> getAll() {
+        return new ArrayList<>(storage.values());
+    }
 
     @Override
     public List<User> getAllFriends(User user) {
         Set<Long> ids = user.getIds();
         List<User> users = new ArrayList<>();
         for (Long userId : ids) {
-            if (super.getStorage().containsKey(userId)) {
-                User userAdd = super.getStorage().get(userId);
+            if (storage.containsKey(userId)) {
+                User userAdd = storage.get(userId);
                 users.add(userAdd);
             }
         }
@@ -32,7 +67,7 @@ public class InMemoryUserStorage extends InMemoryBaseStorage<User> implements Us
         Set<Long> idsOther = otherUser.getIds();
         ids.retainAll(idsOther);
         for (Long userId : ids) {
-            users.add(super.getStorage().get(userId));
+            users.add(storage.get(userId));
         }
         return users;
     }

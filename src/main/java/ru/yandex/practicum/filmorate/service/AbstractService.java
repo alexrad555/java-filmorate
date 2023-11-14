@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
-import ru.yandex.practicum.filmorate.model.BaseUnit;
-
 import java.util.List;
 
-public abstract class AbstractService<T extends BaseUnit> {
+public abstract class AbstractService<T> {
 
     public abstract T create(T data);
 

@@ -7,12 +7,19 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class Film extends BaseUnit {
+@EqualsAndHashCode(of = {"id"})
+public class Film  {
+
+    private Long id;
+
+    private Set<Long> ids = new HashSet<>();
+
     @NotBlank
     private String name;
 

@@ -10,12 +10,19 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class User extends BaseUnit {
+@EqualsAndHashCode(of = {"id"})
+public class User {
+
+    private Long id;
+
+    private Set<Long> ids = new HashSet<>();
+
     @NotEmpty
     @Email
     private String email;
