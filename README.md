@@ -1,4 +1,4 @@
 java-filmorate
 Template repository for Filmorate project.
 ![sch.png](sch.png)
-[schema.sql](src%2Fmain%2Fresources%2Fschema.sql)
+https://dbdiagram.io/d/6553b7e27d8bbd64652e9304
