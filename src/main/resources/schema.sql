@@ -4,7 +4,6 @@ CREATE TABLE "users" (
   "login" varchar,
   "name" varchar,
   "birthday" timestamp,
-  "deleted" bool
 );
 
 CREATE TABLE "films" (
