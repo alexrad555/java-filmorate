@@ -24,8 +24,8 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-        int UserId = simpleJdbcInsert.executeAndReturnKey(userMap(data)).intValue();
-        return getById(UserId);
+        int userId = simpleJdbcInsert.executeAndReturnKey(userMap(data)).intValue();
+        return getById(userId);
     }
 
     @Override
