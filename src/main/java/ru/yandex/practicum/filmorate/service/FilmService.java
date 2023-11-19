@@ -61,7 +61,7 @@ public class FilmService extends AbstractService<Film> {
 
     @Override
     public Film update(Film film) {
-        Film filmCheck =checkStorageFilm(film.getId());
+        Film filmCheck = checkStorageFilm(film.getId());
         validate(film);
         Film updatedFilm = filmStorage.update(film);
         Mpa mpa = mpaStorage.getById(updatedFilm.getMpa().getId());
@@ -94,10 +94,10 @@ public class FilmService extends AbstractService<Film> {
                 .build();
     }
 
-    public void deleteLike(Integer FilmId, Integer userId) {
-        Film film =checkStorageFilm(FilmId);
+    public void deleteLike(Integer filmId, Integer userId) {
+        Film film =checkStorageFilm(filmId);
         User user = checkStorageUser(userId);
-        likeStorage.deleteLike(FilmId,userId);
+        likeStorage.deleteLike(filmId,userId);
     }
 
     public void addLike(Integer FilmId, Integer userId) {
