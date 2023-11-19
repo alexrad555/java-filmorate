@@ -95,15 +95,15 @@ public class FilmService extends AbstractService<Film> {
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
-        Film film =checkStorageFilm(filmId);
+        Film film = checkStorageFilm(filmId);
         User user = checkStorageUser(userId);
         likeStorage.deleteLike(filmId,userId);
     }
 
-    public void addLike(Integer FilmId, Integer userId) {
-        Film film = checkStorageFilm(FilmId);
+    public void addLike(Integer filmId, Integer userId) {
+        Film film = checkStorageFilm(filmId);
         User user = checkStorageUser(userId);
-        likeStorage.addLike(FilmId, userId);
+        likeStorage.addLike(filmId, userId);
     }
 
     public List<Film> getAllPopular(Integer count) {
