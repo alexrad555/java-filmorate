@@ -1,19 +1,17 @@
 package ru.yandex.practicum.filmorate.storage.memory;
 
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
-@Component
+
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Long, User> storage = new HashMap<>();
-    private long generatedId;
+    private final Map<Integer, User> storage = new HashMap<>();
+    private Integer generatedId;
 
     @Override
     public User create(User data) {
@@ -26,7 +24,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(Long id) {
+    public User getById(int id) {
         if (!storage.containsKey(id)) {
             throw new DataNotFoundException("Не найден id");
         }
@@ -47,11 +45,10 @@ public class InMemoryUserStorage implements UserStorage {
         return new ArrayList<>(storage.values());
     }
 
-    @Override
     public List<User> getAllFriends(User user) {
-        Set<Long> ids = user.getIds();
+        Set<Integer> ids = user.getIds();
         List<User> users = new ArrayList<>();
-        for (Long userId : ids) {
+        for (Integer userId : ids) {
             if (storage.containsKey(userId)) {
                 User userAdd = storage.get(userId);
                 users.add(userAdd);
@@ -60,26 +57,23 @@ public class InMemoryUserStorage implements UserStorage {
         return users;
     }
 
-    @Override
     public List<User> getCommonFriends(User user, User otherUser) {
         List<User> users = new ArrayList<>();
-        Set<Long> ids = new HashSet<>(user.getIds());
-        Set<Long> idsOther = otherUser.getIds();
+        Set<Integer> ids = new HashSet<>(user.getIds());
+        Set<Integer> idsOther = otherUser.getIds();
         ids.retainAll(idsOther);
-        for (Long userId : ids) {
+        for (Integer userId : ids) {
             users.add(storage.get(userId));
         }
         return users;
     }
 
-    @Override
     public User addFriend(User user, User friendUser) {
         user.getIds().add(friendUser.getId());
         friendUser.getIds().add(user.getId());
         return user;
     }
 
-    @Override
     public void deleteFriend(User user, User friendUser) {
         user.getIds().remove(friendUser.getId());
         friendUser.getIds().remove(user.getId());

@@ -12,5 +12,5 @@ public abstract class AbstractService<T> {
 
     public abstract void validate(T data);
 
-    public abstract T getById(Long id);
+    public abstract T getById(Integer id);
 }

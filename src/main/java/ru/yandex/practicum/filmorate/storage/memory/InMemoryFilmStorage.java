@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
-@Component
+
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final Map<Long, Film> storage = new HashMap<>();
-    private long generatedId;
+    private final Map<Integer, Film> storage = new HashMap<>();
+    private Integer generatedId;
 
     @Override
     public Film create(Film data) {
@@ -29,7 +29,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(Long id) {
+    public Film getById(Integer id) {
         if (!storage.containsKey(id)) {
             throw new DataNotFoundException("Не найден id");
         }
@@ -50,20 +50,17 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>(storage.values());
     }
 
-    @Override
     public List<Film> getPopular() {
         return new ArrayList<>(storage.values());
     }
 
-    @Override
     public Film addLike(Film film, User user) {
-        film.getIds().add(user.getId());
+        film.getLikes().add(user.getId());
         return film;
     }
 
-    @Override
     public void deleteLike(Film film, User user) {
-        film.getIds().remove(user.getId());
+        film.getLikes().remove(user.getId());
     }
 
 }

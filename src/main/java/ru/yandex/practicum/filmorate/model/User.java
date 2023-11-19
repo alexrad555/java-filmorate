@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class User {
 
-    private Long id;
+    private Integer id;
 
-    private Set<Long> ids = new HashSet<>();
+    @JsonIgnore
+    private Set<Integer> ids = new HashSet<>();
 
     @NotEmpty
     @Email
