@@ -19,13 +19,14 @@ import java.util.Map;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Film create(Film film) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films")
                 .usingGeneratedKeyColumns("id");
-        int FilmId = simpleJdbcInsert.executeAndReturnKey(filmMap(film)).intValue();
-        return getById(FilmId);
+        int filmId = simpleJdbcInsert.executeAndReturnKey(filmMap(film)).intValue();
+        return getById(filmId);
     }
 
     @Override

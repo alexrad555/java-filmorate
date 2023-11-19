@@ -16,6 +16,7 @@ import java.util.List;
 public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public List<Genre> getAll() {
         String slqQuery = "select * from genres ORDER BY id";
