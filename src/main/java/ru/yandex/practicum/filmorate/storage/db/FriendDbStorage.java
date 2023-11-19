@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class FriendDbStorage implements FriendStorage {
