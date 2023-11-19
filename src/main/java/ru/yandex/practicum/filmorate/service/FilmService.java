@@ -36,6 +36,7 @@ public class FilmService extends AbstractService<Film> {
         this.filmStorage = filmStorage;
         this.likeStorage = likeStorage;
     }
+
     static final LocalDate START_RELEASE_DATA = LocalDate.of(1895, 12, 28);
 
     @Override
