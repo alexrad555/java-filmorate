@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import java.util.List;
 
 @Service
-public class MpaService extends AbstractService<Mpa>{
+public class MpaService extends AbstractService<Mpa> {
 
     public MpaStorage mpaStorage;
 
@@ -26,6 +26,7 @@ public class MpaService extends AbstractService<Mpa>{
     public List<Mpa> getAll() {
         return mpaStorage.getAll();
     }
+
     @Override
     public Mpa create(Mpa data) {
         throw new UnsupportedOperationException();
