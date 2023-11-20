@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.db.mapper.FilmExtractor;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -47,7 +48,7 @@ public class FilmDbStorageTest {
                 .description("description2")
                 .releaseDate(LocalDate.parse("1991-08-27"))
                 .duration(100)
-                .mpa(mpaDbStorage.getById(3).toBuilder().name(null).build())
+                .mpa(mpaDbStorage.getById(3).toBuilder().name("PG-13").build())
                 .build();
         filmStorage.create(film1);
         filmStorage.create(film2);
@@ -92,6 +93,6 @@ public class FilmDbStorageTest {
         assertThat(filmStorage.getById(film2.getId()))
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(film2);
+                .isEqualTo(film2.toBuilder().genres(new HashSet<>()).build());
     }
 }
