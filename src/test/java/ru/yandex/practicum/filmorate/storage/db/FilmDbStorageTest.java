@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.db.mapper.FilmExtractor;
 
 import java.time.LocalDate;
 
@@ -29,7 +30,7 @@ public class FilmDbStorageTest {
 
     @BeforeEach
     void setUp() {
-        filmStorage = new FilmDbStorage(jdbcTemplate);
+        filmStorage = new FilmDbStorage(jdbcTemplate, new FilmExtractor());
         mpaDbStorage = new MpaDbStorage(jdbcTemplate);
 
         film1 = Film.builder()

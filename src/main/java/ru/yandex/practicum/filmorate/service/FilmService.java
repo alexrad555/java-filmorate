@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -13,7 +14,6 @@ import ru.yandex.practicum.filmorate.storage.*;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,10 +26,11 @@ public class FilmService extends AbstractService<Film> {
     private final UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage,
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
                        LikeStorage likeStorage,
                        MpaStorage mpaStorage,
-                       GenreStorage genreStorage, UserStorage userStorage) {
+                       GenreStorage genreStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
         this.genreStorage = genreStorage;
         this.mpaStorage = mpaStorage;
         this.userStorage = userStorage;
@@ -75,23 +76,12 @@ public class FilmService extends AbstractService<Film> {
 
     @Override
     public List<Film> getAll() {
-        return filmStorage.getAll().stream()
-                .map(it -> it.toBuilder()
-                        .genres(new HashSet<>(genreStorage.getFilmGenres(it.getId())))
-                        .mpa(mpaStorage.getById(it.getMpa().getId()))
-                        .build()
-                ).collect(Collectors.toList());
+        return filmStorage.getAll();
     }
 
     @Override
     public Film getById(Integer id) {
-        Film film = filmStorage.getById(id);
-        Mpa mpa = mpaStorage.getById(film.getMpa().getId());
-        Set<Genre> genres = new HashSet<>(genreStorage.getFilmGenres(film.getId()));
-        return film.toBuilder()
-                .genres(genres)
-                .mpa(mpa)
-                .build();
+        return filmStorage.getById(id);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
@@ -107,12 +97,7 @@ public class FilmService extends AbstractService<Film> {
     }
 
     public List<Film> getAllPopular(Integer count) {
-        return likeStorage.getPopular(count).stream()
-                .map(it -> it.toBuilder()
-                        .genres(new HashSet<>(genreStorage.getFilmGenres(it.getId())))
-                        .mpa(mpaStorage.getById(it.getMpa().getId()))
-                        .build()
-                ).collect(Collectors.toList());
+        return likeStorage.getPopular(count);
     }
 
     private Film checkStorageFilm(Integer id) {

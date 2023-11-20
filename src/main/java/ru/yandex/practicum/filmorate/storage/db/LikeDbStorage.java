@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.db.mapper.FilmExtractor;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -16,16 +14,20 @@ import java.util.List;
 public class LikeDbStorage implements LikeStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final FilmExtractor filmExtractor;
 
     @Override
     public List<Film> getPopular(Integer count) {
-        String sqlQuery = "SELECT f.* " +
-                "FROM films f " +
-                "LEFT JOIN likes l ON f.id = l.film_id " +
-                "GROUP BY f.id " +
-                "ORDER BY COUNT(l.user_id) DESC " +
-                "LIMIT ?";
-        return jdbcTemplate.query(sqlQuery, LikeDbStorage::createFilm, count);
+        String sqlQuery = "select f.*, g.id as genre_id, g.name as genre_name, m.id as mpa_id, m.name as mpa_name" +
+                "  from films f " +
+                "  left join film_genre fg on fg.film_id = f.id " +
+                "  left join genres g on g.id = fg.genre_id " +
+                "  left join mpa m on m.id = f.mpa_id" +
+                "  LEFT JOIN likes l ON f.id = l.film_id " +
+                "  GROUP BY f.id " +
+                "  ORDER BY COUNT(l.user_id) DESC " +
+                "  LIMIT ?";
+        return jdbcTemplate.query(sqlQuery, filmExtractor, count);
     }
 
     @Override
@@ -40,14 +42,4 @@ public class LikeDbStorage implements LikeStorage {
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
-    private static Film createFilm(ResultSet rs, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(rs.getInt("id"))
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .releaseDate(rs.getDate("release_date").toLocalDate())
-                .duration(rs.getInt("duration"))
-                .mpa(Mpa.builder().id(rs.getInt("mpa_id")).build())
-                .build();
-    }
 }

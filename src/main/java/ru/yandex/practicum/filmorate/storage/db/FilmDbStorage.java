@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.db.mapper.FilmExtractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,14 @@ import java.util.Map;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final FilmExtractor filmExtractor;
+
+    static final String sqlQueryH2 = "select f.*, g.id as genre_id, g.name as genre_name, m.id as mpa_id, m.name as mpa_name" +
+            "  from films f " +
+            "  left join film_genre fg on fg.film_id = f.id " +
+            "  left join genres g on g.id = fg.genre_id " +
+            "  left join mpa m on m.id = f.mpa_id";
 
     @Override
     public Film create(Film film) {
@@ -44,30 +53,20 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAll() {
-        String slqQuery = "select * from films";
-        return jdbcTemplate.query(slqQuery, FilmDbStorage::createFilm);
+        return jdbcTemplate.query(sqlQueryH2, filmExtractor);
     }
+
 
     @Override
     public Film getById(Integer id) {
-        String slqQuery = "select * from films where id = ?";
-        List<Film> films = jdbcTemplate.query(slqQuery, FilmDbStorage::createFilm, id);
+        String sqlQuery = sqlQueryH2 + "  where f.id = ?";
+        List<Film> films = jdbcTemplate.query(sqlQuery, filmExtractor, id);
         if (films.size() != 1) {
             throw new DataNotFoundException(String.format("films with id %s not single", id));
         }
         return films.get(0);
     }
 
-    private static Film createFilm(ResultSet rs, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(rs.getInt("id"))
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .releaseDate(rs.getDate("release_date").toLocalDate())
-                .duration(rs.getInt("duration"))
-                .mpa(Mpa.builder().id(rs.getInt("mpa_id")).build())
-                .build();
-    }
 
     private Map<String, String> filmMap(Film film) {
         return Map.of("name", film.getName(),
