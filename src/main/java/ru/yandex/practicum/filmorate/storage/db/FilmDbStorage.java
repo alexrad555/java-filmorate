@@ -6,12 +6,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.db.mapper.FilmExtractor;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
