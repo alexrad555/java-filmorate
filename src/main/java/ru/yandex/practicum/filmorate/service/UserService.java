@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -12,10 +14,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UserService extends AbstractService<User> {
 
     private final UserStorage userStorage;
+
+    private final FriendStorage friendStorage;
+
+    @Autowired
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
+                        FriendStorage friendStorage) {
+        this.userStorage = userStorage;
+        this.friendStorage = friendStorage;
+    }
 
     @Override
     public void validate(User data) {
@@ -35,14 +45,15 @@ public class UserService extends AbstractService<User> {
     }
 
     @Override
-    public User getById(Long id) {
-        return userStorage.getById(id);
+    public User getById(Integer id) {
+        return getUserFromStorage(id);
     }
 
     @Override
-    public User update(User data) {
-        validate(data);
-        return userStorage.update(data);
+    public User update(User user) {
+        User userCheck = getUserFromStorage(user.getId());
+        validate(user);
+        return userStorage.update(user);
     }
 
     @Override
@@ -50,30 +61,31 @@ public class UserService extends AbstractService<User> {
         return userStorage.getAll();
     }
 
-    public void deleteFriend(Long id, Long friendId) {
-        User user = getUserFromStorage(id);
-        User friendUser = getUserFromStorage(friendId);
-        userStorage.deleteFriend(user, friendUser);
+    public void deleteFriend(Integer id, Integer friendId) {
+        User userCheck = getUserFromStorage(id);
+        User friendUserCheck = getUserFromStorage(friendId);
+        friendStorage.deleteFriend(id, friendId);
     }
 
-    public User addFriend(Long id, Long friendId) {
-        User user = getUserFromStorage(id);
-        User friendUser = getUserFromStorage(friendId);
-        return userStorage.addFriend(user, friendUser);
+    public User addFriend(Integer userId, Integer friendIs) {
+        User userCheck = getUserFromStorage(userId);
+        User friendUserCheck = getUserFromStorage(friendIs);
+        friendStorage.addFriend(userId, friendIs);
+        return userCheck;
     }
 
-    public List<User> getAllFriends(Long id) {
-        User user = getUserFromStorage(id);
-        return userStorage.getAllFriends(user);
+    public List<User> getAllFriends(Integer userId) {
+        User user = getUserFromStorage(userId);
+        return friendStorage.getAllFriends(userId);
     }
 
-    public List<User> getCommonFriends(Long id, Long otherId) {
-        User user = getUserFromStorage(id);
+    public List<User> getCommonFriends(Integer userId, Integer otherId) {
+        User user = getUserFromStorage(userId);
         User otherUser = getUserFromStorage(otherId);
-        return userStorage.getCommonFriends(user, otherUser);
+        return friendStorage.getCommonFriends(userId, otherId);
     }
 
-    private User getUserFromStorage(Long  id) {
+    private User getUserFromStorage(Integer  id) {
         Optional<User> userOptional = Optional.ofNullable(userStorage.getById(id));
         return userOptional.orElseThrow(() -> new DataNotFoundException("Не найден id"));
     }

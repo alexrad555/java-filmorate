@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -10,12 +11,20 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
-public class User extends BaseUnit {
+@EqualsAndHashCode(of = {"id"})
+public class User {
+
+    private Integer id;
+
+    @JsonIgnore
+    private Set<Integer> ids = new HashSet<>();
+
     @NotEmpty
     @Email
     private String email;

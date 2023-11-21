@@ -5,16 +5,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
-public abstract class BaseUnit {
+public class Mpa {
 
-    private Long id;
+    private Integer id;
 
-    private Set<Long> ids = new HashSet<>();
+    @NotBlank
+    private String name;
 }

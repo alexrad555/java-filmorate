@@ -4,13 +4,14 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 
-public interface UserStorage extends AbstractStorage<User> {
+public interface UserStorage {
 
-    List<User> getAllFriends(User user);
+    User create(User data);
 
-    User addFriend(User user, User friendUser);
+    User update(User data);
 
-    void deleteFriend(User user, User friendUser);
+    List<User> getAll();
 
-    List<User> getCommonFriends(User user, User otherUser);
+    User getById(int id);
+
 }

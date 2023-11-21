@@ -1,27 +1,42 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class FilmService extends AbstractService<Film> {
 
     private final FilmStorage filmStorage;
-
+    private final LikeStorage likeStorage;
+    private final GenreStorage genreStorage;
+    private final MpaStorage mpaStorage;
     private final UserStorage userStorage;
+
+    @Autowired
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       LikeStorage likeStorage,
+                       MpaStorage mpaStorage,
+                       GenreStorage genreStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
+        this.genreStorage = genreStorage;
+        this.mpaStorage = mpaStorage;
+        this.userStorage = userStorage;
+        this.filmStorage = filmStorage;
+        this.likeStorage = likeStorage;
+    }
 
     static final LocalDate START_RELEASE_DATA = LocalDate.of(1895, 12, 28);
 
@@ -35,13 +50,28 @@ public class FilmService extends AbstractService<Film> {
     @Override
     public Film create(Film data) {
         validate(data);
-        return filmStorage.create(data);
+        Film newFilm = filmStorage.create(data);
+        Mpa mpa = mpaStorage.getById(newFilm.getMpa().getId());
+        genreStorage.addFilmGenres(newFilm.getId(), new ArrayList<>(data.getGenres()));
+        Set<Genre> genres = new HashSet<>(genreStorage.getFilmGenres(newFilm.getId()));
+        return newFilm.toBuilder()
+                .genres(genres)
+                .mpa(mpa)
+                .build();
     }
 
     @Override
-    public Film update(Film data) {
-        validate(data);
-        return filmStorage.update(data);
+    public Film update(Film film) {
+        Film filmCheck = checkStorageFilm(film.getId());
+        validate(film);
+        Film updatedFilm = filmStorage.update(film);
+        Mpa mpa = mpaStorage.getById(updatedFilm.getMpa().getId());
+        genreStorage.addFilmGenres(updatedFilm.getId(), new ArrayList<>(film.getGenres()));
+        Set<Genre> genres = new HashSet<>(genreStorage.getFilmGenres(updatedFilm.getId()));
+        return updatedFilm.toBuilder()
+                .genres(genres)
+                .mpa(mpa)
+                .build();
     }
 
     @Override
@@ -49,38 +79,33 @@ public class FilmService extends AbstractService<Film> {
         return filmStorage.getAll();
     }
 
-
     @Override
-    public Film getById(Long id) {
+    public Film getById(Integer id) {
         return filmStorage.getById(id);
     }
 
-    public void deleteLike(Long id, Long userId) {
-        Film film = checkStorageFilm(id);
+    public void deleteLike(Integer filmId, Integer userId) {
+        Film film = checkStorageFilm(filmId);
         User user = checkStorageUser(userId);
-        filmStorage.deleteLike(film,user);
+        likeStorage.deleteLike(filmId,userId);
     }
 
-    public Film addLike(Long id, Long userId) {
-        Film film = checkStorageFilm(id);
+    public void addLike(Integer filmId, Integer userId) {
+        Film film = checkStorageFilm(filmId);
         User user = checkStorageUser(userId);
-        return filmStorage.addLike(film, user);
+        likeStorage.addLike(filmId, userId);
     }
 
-    public List<Film> getAllPopular(Long count) {
-        List<Film> storage = filmStorage.getPopular();
-        return storage.stream()
-                .sorted(Comparator.comparingInt(p0 -> -p0.getIds().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+    public List<Film> getAllPopular(Integer count) {
+        return likeStorage.getPopular(count);
     }
 
-    private Film checkStorageFilm(Long  id) {
+    private Film checkStorageFilm(Integer id) {
         Optional<Film> filmOptional = Optional.ofNullable(filmStorage.getById(id));
         return filmOptional.orElseThrow(() -> new DataNotFoundException("Не найден id"));
     }
 
-    private User checkStorageUser(Long  id) {
+    private User checkStorageUser(Integer id) {
         Optional<User> userOptional = Optional.ofNullable(userStorage.getById(id));
         return userOptional.orElseThrow(() -> new DataNotFoundException("Не найден id"));
     }
